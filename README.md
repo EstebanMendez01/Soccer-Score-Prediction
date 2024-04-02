@@ -37,9 +37,7 @@ python laliga.py
 
 OR
 
-1. Click this link
-
-[Soccer-Score-Prediction](https://soccer-score-prediction.onrender.com)
+1. Click this link [Soccer-Score-Prediction](https://soccer-score-prediction.onrender.com)
 
 2. Input the details of the match (home team, away team, goals scored), and click "Predict" to get the prediction.
 
