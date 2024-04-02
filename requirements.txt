@@ -1,0 +1,7 @@
+pandas
+numpy
+flask
+sklearn.linear_model
+sklearn.impute 
+sklearn.preprocessing
+joblib
