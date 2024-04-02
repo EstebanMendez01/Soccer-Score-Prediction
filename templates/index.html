@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soccer Game Score Predictor</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        .card {
+            margin-bottom: 30px;
+        }
+        .form-control {
+            width: 200px;
+        }
+        .btn-primary {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center mb-5">Soccer Game Score Predictor</h1>
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                Predict Match Score
+            </div>
+            <div class="card-body">
+                <form action="/predict" method="post">
+                    <div class="form-group">
+                        <label for="home_team">Home Team:</label>
+                        <select id="home_team" name="home_team" class="form-control" required>
+                            {% for team in home_teams %}
+                                <option value="{{ team }}">{{ team }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="away_team">Away Team:</label>
+                        <select id="away_team" name="away_team" class="form-control" required>
+                            {% for team in away_teams %}
+                                <option value="{{ team }}">{{ team }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="fthg">Full Time Home Goals:</label>
+                        <input type="number" id="fthg" name="fthg" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ftag">Full Time Away Goals:</label>
+                        <input type="number" id="ftag" name="ftag" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="hthg">Half Time Home Goals:</label>
+                        <input type="number" id="hthg" name="hthg" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="htag">Half Time Away Goals:</label>
+                        <input type="number" id="htag" name="htag" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Predict</button>
+                </form>
+                {% if prediction is not none %}
+                <h2 class="mt-3">Prediction: {{ prediction }}</h2>
+                <div>
+                    <canvas id="predictionChart" width="400" height="200"></canvas>
+                </div>
+                <p class="mt-3">The predicted outcome above is represented on the graph. The value indicates the predicted Full Time Result (FTR) of the match. A positive value (1) suggests a home team win, a negative value (-1) indicates an away team win, and zero (0) suggests a draw.</p>
+                <p>Winner: {{ winner }}</p>
+                <p>Score: {{ score }}</p>
+                <p>{{ explanation }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <!-- Chart.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <script>
+        // Get the predicted value from the Flask app
+        var predictionValue = {{ prediction|default(-999) }};
+        if (predictionValue != -999) {
+            // Chart.js setup
+            var ctx = document.getElementById('predictionChart').getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Prediction'],
+                    datasets: [{
+                        label: 'Full Time Result',
+                        data: [predictionValue],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
